@@ -103,11 +103,23 @@ Resources:
             Path: /todos/{id}
             Method: PATCH
   Table:
-     Type: AWS::Serverless::SimpleTable
-     Properties:
-       PrimaryKey:
-         Name: ID
-         Type: String
-       ProvisionedThroughput:
-         ReadCapacityUnits: 1
-         WriteCapacityUnits: 1
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: ID
+        Type: String
+      GlobalSecondaryIndexes:
+        - IndexName: ByComplete
+          KeySchema:
+            - AttributeName: Completed
+              KeyType: Boolean
+        - IndexName: ByCompletedAt
+          KeySchema:
+            - AttributeName: Completed
+              KeyType: HASH
+            - AttributeName: UpdatedAt
+              KeyType: RANGE
+      BillingMode:
+        Mode: OnDemand
+
+  
